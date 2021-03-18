@@ -1,0 +1,63 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/circleci-demo-java-spring
+    # run the steps with Docker
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    resource_class: small
+
+    steps:
+      # check out source code to working directory
+      - checkout
+      # restore the saved cache after the first run or if `pom.xml` has changed
+      - restore_cache:
+          key: eschool-{{ checksum "pom.xml" }}
+      # gets the project dependencies
+      - run: mvn dependency:go-offline
+      # saves the project dependencies
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: eschool-{{ checksum "pom.xml" }}
+      # run unit tests
+      - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
+
+      - store_test_results:
+          # uploads the test metadata from the `target/surefire-reports` to CircleCI dashboard.
+          path: target/surefire-reports
+
+      - store_artifacts: # store the uberjar as an artifact
+          path: target/eschool.jar
+  deploy:
+    # Use simple container for deployment
+    docker:
+      - image: cimg/base:2020.01
+    resource_class: small
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "2b:1f:e0:2c:33:b0:da:94:b3:ee:fd:bf:59:18:8c:14"
+      # Add our server to known_hosts
+      - run:
+          name: fix host authenticity for deploy server
+          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+      - run:
+          name: Deploy Over SSH
+          command: >
+            ssh $SSH_USER@$SSH_HOST "bash /home/ubuntu/script.sh"
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          # only deploy once build job has completed
+          requires:
+            - build
+          filters:
+            # Only deploy on the master branch
+            branches:
+              only: master
+              
