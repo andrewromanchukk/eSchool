@@ -57,6 +57,10 @@ workflows:
       - deploy:
           requires:
             - build
+          # Only deploy on the master branch
+          filters:
+            branches:
+              only: circleci-project-setup
           
                 
 
