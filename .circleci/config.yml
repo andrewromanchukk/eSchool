@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   build:
@@ -45,16 +45,16 @@ jobs:
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy Over SSH
-          command: >
+          command: |
             ssh $SSH_USER@$SSH_HOST "bash ./script.sh"
             
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build
       - deploy:
-          # only deploy once build job has completed
+          # only deploy once build job has completed 
           requires:
             - build
           filters:
