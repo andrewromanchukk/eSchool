@@ -38,7 +38,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "86:e5:1b:18:15:b1:b2:2a:5d:39:09:3e:8d:7e:f6:8a"
+            - "20:25:aa:93:a0:58:6d:e8:38:c8:90:f2:2d:5c:1f:2b"
       # Add our server to known_hosts
       - run:
           name: fix host authenticity for deploy server
