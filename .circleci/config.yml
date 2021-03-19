@@ -53,13 +53,13 @@ workflows:
   
   build_and_deploy:
     jobs:
-      - build          
-      - deploy:
-          requires: 
-            - build
+      - build:
           filters:
             branches:
               only:
-                - master  
+                - master
+      - deploy:
+          requires: 
+            - build    
 
 
