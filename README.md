@@ -9,7 +9,7 @@
 * Add subjects studied at school
 * Assign teachers and subjects to classes 
 
-#### Teachers functionality
+#### Teachers functionalitya
 * View and edit mark book
 * Assign home tasks
 * Add notes for student
