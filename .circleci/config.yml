@@ -41,12 +41,16 @@ jobs:
             - "2b:1f:e0:2c:33:b0:da:94:b3:ee:fd:bf:59:18:8c:14"
       # Add our server to known_hosts
       - run:
-          name: fix host authenticity for deploy server
-          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+          name: "Create build"
+          command: tar -czvf /tmp/build.tar.gz .
       - run:
-          name: Deploy Over SSH
-          command: >
-            ssh $SSH_USER@$SSH_HOST "bash /home/ubuntu/script.sh"
+          name: "Upload to remote server"
+          command: scp /tmp/build.tar.gz SSH_USER@SSH_HOST:~/
+      - run:
+          name: "Install build"
+          command: |
+            ssh SSH_USER@SSH_HOST tar -xvf build.tar.gz -C /home/ubuntu
+            
 workflows:
   version: 2
   build_and_deploy:
