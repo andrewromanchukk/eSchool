@@ -1,3 +1,9 @@
+master_only: &master_only
+  filters:
+    branches:
+      only: master
+
+
 version: 2.1
 
 jobs:
@@ -50,13 +56,13 @@ jobs:
             
 workflows:
   version: 2
+  
   build_and_deploy:
     jobs:
       - build          
       - deploy:
-          
-          filters:
-            branches:
-              only: master
+          <<: *master_only
           requires: 
             - build    
+
+
