@@ -38,18 +38,15 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "2b:1f:e0:2c:33:b0:da:94:b3:ee:fd:bf:59:18:8c:14"
+            - "30:ba:04:5a:09:e9:f7:11:88:c7:d9:04:18:49:f6:3a"
       # Add our server to known_hosts
       - run:
-          name: "Create build"
-          command: tar -czvf /tmp/build.tar.gz .
+          name: fix host authenticity for deploy server
+          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
-          name: "Upload to remote server"
-          command: scp /tmp/build.tar.gz SSH_USER@SSH_HOST:~/
-      - run:
-          name: "Install build"
-          command: |
-            ssh SSH_USER@SSH_HOST tar -xvf build.tar.gz -C /home/ubuntu
+          name: Deploy Over SSH
+          command: >
+            ssh $SSH_USER@$SSH_HOST "bash ./script.sh"
             
 workflows:
   version: 2
