@@ -23,9 +23,9 @@ jobs:
           key: eschool-{{ checksum "pom.xml" }}
       - run:
           name: khohoho
-          command: sudo sed -i  's/localhost/$DB_HOST/'  ./src/main/resources/application.properties \
-                  sudo sed -i  's/DATASOURCE_USERNAME:root/DATASOURCE_USERNAME:$DB_USER/' ./src/main/resources/application.properties \
-                  sudo sed -i  's/DATASOURCE_PASSWORD:root/DATASOURCE_PASSWORD:$DB_PORT/' ./src/main/resources/application.properties
+          command: sed -i  's/localhost/$DB_HOST/'  ./src/main/resources/application.properties \
+                   sed -i  's/DATASOURCE_USERNAME:root/DATASOURCE_USERNAME:$DB_USER/' ./src/main/resources/application.properties \
+                   sed -i  's/DATASOURCE_PASSWORD:root/DATASOURCE_PASSWORD:$DB_PORT/' ./src/main/resources/application.properties
 
       # run unit tests
       - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
