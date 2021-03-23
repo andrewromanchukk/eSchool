@@ -22,11 +22,16 @@ jobs:
             - ~/.m2
           key: eschool-{{ checksum "pom.xml" }}
       - run:
-          name: khohoho
+          name: change db_host
           command: sed -i -e "s|localhost|$DB_HOST|g"  ./src/main/resources/application.properties 
                    #sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g" ./src/main/resources/application.properties \
                    #sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PORT|g" ./src/main/resources/application.properties
-
+      - run:
+          name: change db_usr
+          command: sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g" ./src/main/resources/application.properties 
+      - run:
+          name: change db_passwd
+          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PORT|g" ./src/main/resources/application.properties 
       # run unit tests
       - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
 
