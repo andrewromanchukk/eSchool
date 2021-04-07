@@ -15,6 +15,6 @@ workflows:
           dockerfile: Dockerfile
           path: .
           region: AWS_REGION
-          repo: circleci-ecr-orb-demo
-          tag: "$CIRCLE_SHA1"
+          repo: eschool_backend
+          tag: "$CIRCLE_BUILD_NUM"
 
