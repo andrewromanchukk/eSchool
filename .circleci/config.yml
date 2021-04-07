@@ -16,5 +16,5 @@ workflows:
           path: .
           region: AWS_REGION
           repo: eschool_backend
-          tag: "$CIRCLE_BUILD_NUM"
+          tag: "Build #$CIRCLE_BUILD_NUM"
 
