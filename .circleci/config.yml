@@ -32,15 +32,7 @@ jobs:
       - run:
           name: change db_passwd
           command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PORT|g" ./src/main/resources/application.properties 
-      # run unit tests
-      - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
-
-      - store_test_results:
-          # uploads the test metadata from the `target/surefire-reports` to CircleCI dashboard.
-          path: target/surefire-reports
-
-      - store_artifacts: # store the uberjar as an artifact
-          path: target/eschool.jar
+      
             
 workflows:
   version: 2
@@ -57,7 +49,7 @@ workflows:
           path: .
           region: AWS_REGION
           repo: eschool_backend
-          tag: "$CIRCLE_BUILD_NUM"
+          tag: "latest, v0.1.$CIRCLE_BUILD_NUM"
           requires:
             - build
           # Only deploy on the master branch
