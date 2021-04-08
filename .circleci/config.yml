@@ -1,12 +1,53 @@
 version: 2.1
-
 orbs:
   aws-ecr: circleci/aws-ecr@6.7.0
   aws-cli: circleci/aws-cli@2.0.0
+jobs:
+  build:
+    working_directory: ~/circleci-demo-java-spring
+    # run the steps with Docker
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    resource_class: small
 
+    steps:
+      # check out source code to working directory
+      - checkout
+      # restore the saved cache after the first run or if `pom.xml` has changed
+      - restore_cache:
+          key: eschool-{{ checksum "pom.xml" }}
+      # gets the project dependencies
+      - run: mvn dependency:go-offline
+      # saves the project dependencies
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: eschool-{{ checksum "pom.xml" }}
+      - run:
+          name: change db_host
+          command: sed -i -e "s|localhost|$DB_HOST|g"  ./src/main/resources/application.properties 
+      - run:
+          name: change db_usr
+          command: sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g" ./src/main/resources/application.properties 
+      - run:
+          name: change db_passwd
+          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PORT|g" ./src/main/resources/application.properties 
+      # run unit tests
+      - run: mvn package -Dtest=\!ScheduleControllerIntegrationTest*
+
+      - store_test_results:
+          # uploads the test metadata from the `target/surefire-reports` to CircleCI dashboard.
+          path: target/surefire-reports
+
+      - store_artifacts: # store the uberjar as an artifact
+          path: target/eschool.jar
+            
 workflows:
-  build_and_push_image:
+  version: 2
+
+  build_and_deploy:
     jobs:
+      - build          
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -17,4 +58,28 @@ workflows:
           region: AWS_REGION
           repo: eschool_backend
           tag: "$CIRCLE_BUILD_NUM"
+          requires:
+            - build
+          # Only deploy on the master branch
+          filters:
+            branches:
+              only: circleci-project-setup
+
+# orbs:
+#   aws-ecr: circleci/aws-ecr@6.7.0
+#   aws-cli: circleci/aws-cli@2.0.0
+
+# workflows:
+#   build_and_push_image:
+#     jobs:
+#       - aws-ecr/build-and-push-image:
+#           account-url: AWS_ECR_ACCOUNT_URL
+#           aws-access-key-id: AWS_ACCESS_KEY_ID
+#           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+#           create-repo: true
+#           dockerfile: Dockerfile
+#           path: .
+#           region: AWS_REGION
+#           repo: eschool_backend
+#           tag: "$CIRCLE_BUILD_NUM"
 
