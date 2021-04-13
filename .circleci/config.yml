@@ -25,13 +25,13 @@ jobs:
           key: eschool-{{ checksum "pom.xml" }}
       - run:
           name: change db_host
-          command: sed -i -e "s|localhost|$DB_HOST|g"  ./src/main/resources/application.properties 
+          command: sed -i -e "s|localhost|terraform-maria-db20210413155033103200000001.cb0bjz4brtlz.eu-west-1.rds.amazonaws.com|g"  ./src/main/resources/application.properties 
       - run:
           name: change db_usr
-          command: sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g" ./src/main/resources/application.properties 
+          command: sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:eschool|g" ./src/main/resources/application.properties 
       - run:
           name: change db_passwd
-          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PASSWORD|g" ./src/main/resources/application.properties 
+          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:1234|g" ./src/main/resources/application.properties 
       
             
 workflows:
