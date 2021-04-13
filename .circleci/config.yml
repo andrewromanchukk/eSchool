@@ -31,7 +31,7 @@ jobs:
           command: sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g" ./src/main/resources/application.properties 
       - run:
           name: change db_passwd
-          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PORT|g" ./src/main/resources/application.properties 
+          command: sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PASSWORD|g" ./src/main/resources/application.properties 
       
             
 workflows:
@@ -48,7 +48,7 @@ workflows:
           dockerfile: Dockerfile
           path: .
           region: AWS_REGION
-          repo: eschool_backend
+          repo: eschool-backend
           tag: "latest,v0.1.$CIRCLE_BUILD_NUM"
           requires:
             - build
