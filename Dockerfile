@@ -6,9 +6,9 @@ RUN ls
 ARG DB_HOST
 ARG DB_USER
 ARG DB_PASSWORD
-RUN sed -i -e "s|localhost|$DB_HOST|g"  /tmp/src/main/resources/application.properties
-RUN sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g"  /tmp/src/main/resources/application.properties
-RUN sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PASSWORD|g"  /tmp/src/main/resources/application.properties
+RUN sed -i -e "s|localhost|${DB_HOST}|g"  /tmp/src/main/resources/application.properties
+RUN sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:${DB_USER}|g"  /tmp/src/main/resources/application.properties
+RUN sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:${DB_PASSWORD}|g"  /tmp/src/main/resources/application.properties
 RUN mvn package -DskipTests
 RUN cat /tmp/src/main/resources/application.properties
 
