@@ -3,10 +3,13 @@ COPY pom.xml /tmp/
 COPY src /tmp/src/
 WORKDIR /tmp/
 RUN ls
-RUN ls /tmp/src/main/resources
+RUN sed -i -e "s|localhost|$DB_HOST|g"  /tmp/src/main/resources/application.properties
+RUN sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:$DB_USER|g"  /tmp/src/main/resources/application.properties
+RUN sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:$DB_PASSWORD|g"  /tmp/src/main/resources/application.properties
 RUN mvn package -DskipTests
 
 FROM openjdk:8-jdk-alpine
 COPY --from=MAVEN_TOOL_CHAIN /tmp/target/eschool.jar eschool.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "eschool.jar"]
+RUN cat /tmp/src/main/resources/application.properties
