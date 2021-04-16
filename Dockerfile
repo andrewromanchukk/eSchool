@@ -14,6 +14,6 @@ RUN cat /tmp/src/main/resources/application.properties
 
 FROM openjdk:8-jdk-alpine
 COPY --from=MAVEN_TOOL_CHAIN /tmp/target/eschool.jar eschool.jar
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "eschool.jar"]
 
