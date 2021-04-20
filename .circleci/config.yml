@@ -14,8 +14,9 @@ jobs:
           command: |
             terraform init 
             terraform plan
-            # terraform taint aws_instance.ubuntu
-            # terraform apply -auto-approve 
+             terraform taint aws_launch_configuration.as_backend
+             terraform taint aws_autoscaling_group.asg_backend
+             terraform apply -auto-approve 
       - persist_to_workspace:
           root: .
           paths:
