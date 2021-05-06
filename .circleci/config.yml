@@ -11,12 +11,12 @@ workflows:
           context: my-context1
           image: eschool-be
           registry-url: eu.gcr.io
-      - gcp-gke/publish-and-rollout-image:
-          cluster: gcp-testing
-          context: my-context1
-          container: eschool-be
-          deployment: demo
-          image: eschool-be
-          tag: "latest"
-          requires: 
-            - gcp-gcr/build-and-push-image
+      # - gcp-gke/publish-and-rollout-image:
+      #     cluster: gcp-testing
+      #     context: my-context1
+      #     container: eschool-be
+      #     deployment: demo
+      #     image: eschool-be
+      #     tag: "latest"
+      #     requires: 
+      #       - gcp-gcr/build-and-push-image
