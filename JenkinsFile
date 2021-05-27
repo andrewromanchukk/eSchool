@@ -1,67 +1,53 @@
-void setBuildStatus(String message, String state) {
-  step([
-      $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/IF-090Java/eSchool"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "Unit tests an code analysis"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-  ]);
-}
-pipeline{
-    agent any
-    stages{
-        stage('compile'){
-            steps{
-                withMaven(maven : 'maven3'){
-                    sh 'mvn clean compile'
+pipeline {
+
+  agent any
+  environment 
+      {
+        DATASOURCE_URL = "104.198.247.139"
+        DATASOURCE_USERNAME = 'eschool'
+        DATASOURCE_PASSWORD = '1234'
+      }
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/andrewromanchukk/backend-eschool-k8s.git', branch:'master'
+      }
+    }
+    
+      stage("Build image") {
+            // environment {
+            //     DB_HOST = credentials('DB_HOST')
+            //     DB_USER = credentials('DB_USER')
+            //     DB_PASSWORD = credentials('DB_PASSWORD')
+            //   }
+            steps {
+                script {
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DATASOURCE_URL=$DATASOURCE_URL --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
                 }
             }
         }
-        stage('test'){
-            steps{
-                withMaven(maven : 'maven3'){
-                    sh 'mvn test -Dtest=!academy.softserve.eschool.*.*IntegrationTest'
-                }
-            }
-        }
-        stage('Sonar analysis'){
-            steps{
-                withMaven(maven : 'maven3'){
-                    withSonarQubeEnv('sonar6'){
-                        sh 'mvn sonar:sonar'
+    
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/hellowhale', 'gcr:gcr_eschool') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
                     }
                 }
             }
         }
-        stage("Quality Gate"){
-             steps{
-                 timeout(time: 5, unit: 'MINUTES') {
-                     script{
-                         def qg = waitForQualityGate()
-                         if (qg.status != 'OK') {
-                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                         }
-                     }
-                 }
-             }
-        }
-        stage("Build"){
-            steps{
-                withMaven(maven : 'maven3'){
-                    sh 'mvn package -Dmaven.test.skip=true'
-                }
-            }
-        }
-    }
-    post {
-        always {
-            archiveArtifacts artifacts: '**/*.jar', onlyIfSuccessful: true
-        }
-        success {
-            setBuildStatus("Build succeeded", "SUCCESS");
-        }
-        failure {
-            setBuildStatus("Build failed", "FAILURE");
-        }
-    }
+
+    
+  //   stage('Deploy App') {
+  //     steps {
+  //       script {
+  //         kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
+  //       }
+  //     }
+  //   }
+
+  // }
+  }
 }
