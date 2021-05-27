@@ -29,7 +29,7 @@ pipeline {
             //   }
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DATASOURCE_URL=$DATASOURCE_URL --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
+                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DATASOURCE_URL=${DATASOURCE_URL} --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
                 }
             }
         }
