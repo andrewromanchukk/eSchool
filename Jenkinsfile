@@ -18,7 +18,7 @@ pipeline {
       stage("Build image") {
               environment 
                 {
-                  DATASOURCE_URL = credentials("'DB_HOST'")
+                  DATASOURCE_URL = credentials("$DB_HOST")
                   DATASOURCE_USERNAME = credentials('DB_USER')
                   DATASOURCE_PASSWORD = credentials ('DB_PASSWORD')
                 }
