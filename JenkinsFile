@@ -11,7 +11,7 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git url:'https://github.com/andrewromanchukk/backend-eschool-k8s.git', branch:'master'
+        git url:'https://github.com/andrewromanchukk/eSchool.git', branch:'master'
       }
     }
     
