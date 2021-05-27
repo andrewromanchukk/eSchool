@@ -1,12 +1,12 @@
 pipeline {
 
   agent any
-  environment 
-      {
-        DATASOURCE_URL = "104.198.247.139"
-        DATASOURCE_USERNAME = 'eschool'
-        DATASOURCE_PASSWORD = '1234'
-      }
+  // environment 
+  //     {
+  //       DATASOURCE_URL = "104.198.247.139"
+  //       DATASOURCE_USERNAME = 'eschool'
+  //       DATASOURCE_PASSWORD = '1234'
+  //     }
   stages {
 
     stage('Checkout Source') {
@@ -29,7 +29,7 @@ pipeline {
             //   }
             steps {
                 script {
-                    myapp = docker.build("igneous-sum-312016/hellowhale:${BUILD_ID}", "--build-arg DATASOURCE_URL=$DATASOURCE_URL --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
+                    myapp = docker.build("igneous-sum-312016/eschool_backend:${BUILD_ID}", "--build-arg DATASOURCE_URL=$DATASOURCE_URL --build-arg DATASOURCE_USERNAME=$DATASOURCE_USERNAME --build-arg DATASOURCE_PASSWORD=$DATASOURCE_PASSWORD --no-cache .")
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
       stage("Push image") {
             steps {
                 script {
-                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/hellowhale', 'gcr:gcr_eschool') {
+                    docker.withRegistry('https://eu.gcr.io/igneous-sum-312016/eschool_backend', 'gcr:gcr_eschool') {
                             myapp.push("latest")
                             myapp.push("${env.BUILD_ID}")
                     }
