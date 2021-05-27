@@ -16,6 +16,12 @@ pipeline {
     }
     
       stage("Build image") {
+              environment 
+                {
+                  DATASOURCE_URL = "104.198.247.139"
+                  DATASOURCE_USERNAME = 'eschool'
+                  DATASOURCE_PASSWORD = '1234'
+                }
             // environment {
             //     DB_HOST = credentials('DB_HOST')
             //     DB_USER = credentials('DB_USER')

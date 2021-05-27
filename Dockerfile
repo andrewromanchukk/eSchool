@@ -5,7 +5,7 @@ WORKDIR /tmp/
 RUN ls
 ARG DATASOURCE_URL
 ARG DATASOURCE_USERNAME
-ARG DB_PASSWORD
+ARG DATASOURCE_PASSWORD
 RUN sed -i -e "s|localhost|${DATASOURCE_URL}|g"  /tmp/src/main/resources/application.properties
 RUN sed -i -e "s|DATASOURCE_USERNAME:root|DATASOURCE_USERNAME:${DATASOURCE_USERNAME}|g"  /tmp/src/main/resources/application.properties
 RUN sed -i -e "s|DATASOURCE_PASSWORD:root|DATASOURCE_PASSWORD:${DATASOURCE_PASSWORD}|g"  /tmp/src/main/resources/application.properties
